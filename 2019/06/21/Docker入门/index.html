@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">Tag: web | 聂文强的个人博客</title>
+  <title itemprop="name">Docker入门 | 聂文强的个人博客</title>
   
     <link rel="shortcut icon" href="/images/favicon.ico">
   
@@ -319,97 +319,179 @@
   </div>
 </header>
 
-      
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
 <div class="pattern-center-blank"></div>
-<div class="pattern-center ">
-  <div class="pattern-attachment-img">
-    <img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="web.img" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png);" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      Docker入门</h1>
+      <p class="entry-census">
+        <span>
+          <a href>
+            <img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href>BrokenWings</a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2019-6-21<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-  <header class="pattern-header ">
-    <h1 class="cat-title">web</h1>
-  </header>
-</div>
+
 <div id="content" class="site-content">
   <div id="primary" class="content-area">
     <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h1 id="CentOS7安装Docker"><a href="#CentOS7安装Docker" class="headerlink" title="CentOS7安装Docker"></a>CentOS7安装Docker</h1><h3 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h3><p>Docker 运行在 CentOS 7 上，要求系统为64位、系统内核版本为 3.10 以上。</p>
+<h3 id="使用-yum-安装（CentOS-7下）"><a href="#使用-yum-安装（CentOS-7下）" class="headerlink" title="使用 yum 安装（CentOS 7下）"></a>使用 yum 安装（CentOS 7下）</h3><p>Docker 要求 CentOS 系统的内核版本高于 3.10 ，查看本页面的前提条件来验证你的CentOS 版本是否支持 Docker 。<br>通过 uname -r 命令查看你当前的内核版本</p>
+<h3 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h3><p>从 2017 年 3 月开始 docker 在原来的基础上分为两个分支版本: Docker CE 和 Docker EE<br>Docker CE 即社区免费版，Docker EE 即企业版，强调安全，但需付费使用。</p>
+<ul>
+<li><strong>移除旧的版本：</strong>  <pre><code>sudo yum remove docker \
+                docker-client \
+                docker-client-latest \
+                docker-common \
+                docker-latest \
+                docker-latest-logrotate \
+                docker-logrotate \
+                docker-engine
+</code></pre></li>
+</ul>
+<ul>
+<li><strong>安装必须的软件包:</strong>  </li>
+</ul>
+<p>安装yum-utils，它提供一个yum-config-manager单元，同时安装的device-mapper-persistent-data和lvm2用于储存设备映射（devicemapper）必须的两个软件包。<br><code>sudo yum install -y yum-utils device-mapper-persistent-data lvm2</code></p>
+<ul>
+<li><strong>紧接着配置一个稳定（stable）的仓库:</strong>  </li>
+</ul>
+<p>仓库配置会保存到/etc/yum.repos.d/docker-ce.repo文件中。<br><code>sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</code></p>
+<ul>
+<li><strong>更新Yum安装的相关Docke软件包:</strong></li>
+</ul>
+<p><code>sudo yum makecache fast</code></p>
+<ul>
+<li><strong>安装Docker CE:</strong></li>
+</ul>
+<p><code>sudo yum install docker-ce</code></p>
+<ul>
+<li><strong>设置随系统启动</strong></li>
+</ul>
+<p><code>systemctl enable docker.service</code></p>
+<ul>
+<li><strong>启动Docker</strong></li>
+</ul>
+<p><code>sudo systemctl start docker</code></p>
+<h3 id="镜像加速"><a href="#镜像加速" class="headerlink" title="镜像加速"></a>镜像加速</h3><p>鉴于国内网络问题，后续拉取 Docker 镜像十分缓慢，我们可以需要配置加速器来解决<br><code>vi /etc/docker/daemon.json</code></p>
+<pre><code>{
+    &quot;registry-mirrors&quot;:[&quot;XXX&quot;],  //镜像加速地址
+    &quot;insecure-registries&quot;: [&quot;10.0.91.129:8888&quot;] //Docker如果需要从非SSL源管理镜像，这里加上
+}
+</code></pre><p>国内较快的镜像(registry-mirrors)原地址：<br>网易：<a href="http://hub-mirror.c.163.com" target="_blank" rel="noopener">http://hub-mirror.c.163.com</a><br>docker官方中国区：<a href="https://registry.docker-cn.com" target="_blank" rel="noopener">https://registry.docker-cn.com</a> </p>
+<p>使用阿里云加速器加快获取docker官方镜像：  </p>
+<ol>
+<li>注册阿里云</li>
+<li>进入<a href="https://cr.console.aliyun.com/#/accelerator" target="_blank" rel="noopener">阿里云容器镜像服务</a><br><img src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614134246.png" alt="加速示例"></li>
+</ol>
+<h3 id="卸载Docker-CE"><a href="#卸载Docker-CE" class="headerlink" title="卸载Docker CE:"></a>卸载Docker CE:</h3><ol>
+<li><p>查询安装过的包<br><code>yum list installed | grep docker</code>  </p>
+</li>
+<li><p>删除安装的软件包<br><code>yum -y remove XXXXXX</code></p>
+</li>
+<li><p>删除镜像/容器等<br><code>rm -rf /var/lib/docker</code></p>
+</li>
+</ol>
+
+        </div>
+        <!-- .entry-content -->
+        <div class="single-reward">
+          <div class="reward-open">赏<div class="reward-main">
+              <ul class="reward-row">
+                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/AliPayQR.jpg"></li>
+                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/WeChanQR.jpg"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+        
+          
+            <div class="post-nepre full next">
+          
+            <a href="/2019/05/19/HelloWorld/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://static.2heng.xin/wp-content/uploads//2019/02/wallhaven-672007-1-1024x576.png" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                Hello World</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/06/21/Docker入门/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/06/21/Docker入门/">
-    Docker入门</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-6-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/06/21/Docker入门/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/05/19/HelloWorld/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://static.2heng.xin/wp-content/uploads//2019/02/wallhaven-672007-1-1024x576.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/05/19/HelloWorld/">
-    Hello World</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-5-19</div>
-    <p>
-    第一篇文章</p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/05/19/HelloWorld/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
+<div id="vcomments"></div>
+<script>
+  window.onload = function(){
+      var valine = new Valine();
+      valine.init({
+        el: '#vcomments',
+        appId: "7h28fK7ml5zBHaNkVEgfPq91-gzGzoHsz",
+        appKey: "6cCEaVuVobEqJ6D67OkYKQqJ",
+        path: window.location.pathname,
+        placeholder: "你是我一生只会遇见一次的惊喜 ..."
+      })
+  }
+</script>
 
-
-      <div class="clearer">
-      </div>
-    </main>
-    <!--  -->
-    
-  </div>
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <a href class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg" itemprop="image" alt="BrokenWings" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href itemprop="url" rel="author">BrokenWings</a>
+            </h3>
+          </div>
+        </div>
+        <hr>
+        <p><i class="iconfont icon-write"></i>一个热爱学习的人</p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
+
+
+
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
