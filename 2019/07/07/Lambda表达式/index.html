@@ -359,6 +359,8 @@
 <thead>
 <tr>
 <th>接口</th>
+<th>抽象方法</th>
+<th>功能</th>
 <th>参数</th>
 <th>返回类型</th>
 <th>示例  </th>
@@ -367,66 +369,98 @@
 <tbody>
 <tr>
 <td>Predicate<t></t></td>
+<td>test(T t)</td>
+<td>判断真假</td>
 <td>T</td>
 <td>boolean</td>
 <td>任天堂是世界的主宰吗？</td>
 </tr>
 <tr>
 <td>Consumer<t></t></td>
+<td>accept(T t)</td>
+<td>消费消息</td>
 <td>T</td>
 <td>void</td>
 <td>输出一个值</td>
 </tr>
 <tr>
 <td>Function&lt;T,R&gt;</td>
+<td>R apply(T t)</td>
+<td>将T映射为R（转换功能）</td>
 <td>T</td>
 <td>R</td>
 <td>获得saber对象的名字</td>
 </tr>
 <tr>
 <td>Supplier<t></t></td>
+<td>T get()</td>
+<td>生产消息</td>
 <td>None</td>
 <td>T</td>
 <td>工厂方法</td>
 </tr>
 <tr>
 <td>UnaryOperator<t></t></td>
+<td>T apply(T t)</td>
+<td>一元操作</td>
 <td>T</td>
 <td>T</td>
 <td>逻辑非（！）</td>
 </tr>
 <tr>
 <td>BinaryOperator<t></t></td>
+<td>apply(T t, U u)</td>
+<td>二元操作</td>
 <td>（T，T）</td>
 <td>T</td>
 <td>求两个数的乘积（*）</td>
 </tr>
 </tbody>
 </table>
-<h2 id="常用的流操作"><a href="#常用的流操作" class="headerlink" title="常用的流操作"></a>常用的流操作</h2><p>返回值是Stream就是惰性求值，反之是及早求值</p>
-<h5 id="collect-Collectors-toList-由Stream里的值生成一个List，是一个及早求值得操作"><a href="#collect-Collectors-toList-由Stream里的值生成一个List，是一个及早求值得操作" class="headerlink" title="collect(Collectors.toList()) 由Stream里的值生成一个List，是一个及早求值得操作"></a>collect(Collectors.toList()) 由Stream里的值生成一个List，是一个及早求值得操作</h5><pre><code>    List&lt;String&gt; collect = Stream.of(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+<h2 id="常用的流操作"><a href="#常用的流操作" class="headerlink" title="常用的流操作"></a>常用的流操作</h2><p>惰性求值：只描述Stream，操作的结果也是Stream，这样的操作称为惰性求值。惰性求值可以像建造者模式一样链式使用，最后再使用及早求值得到最终结果。<br>及早求值：得到最终的结果而不是Stream，这样的操作称为及早求值。<br>总结：返回值是Stream就是惰性求值，反之是及早求值</p>
+<h5 id="collect-Collectors-toList-由Stream里的值生成一个List，是一个及早求值得操作，还有toSet-，toMap-等"><a href="#collect-Collectors-toList-由Stream里的值生成一个List，是一个及早求值得操作，还有toSet-，toMap-等" class="headerlink" title="collect(Collectors.toList()) 由Stream里的值生成一个List，是一个及早求值得操作，还有toSet()，toMap()等"></a>collect(Collectors.toList()) 由Stream里的值生成一个List，是一个及早求值得操作，还有toSet()，toMap()等</h5><pre><code>    List&lt;String&gt; collect = Stream.of(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
                                  .collect(Collectors.toList());
-</code></pre><h5 id="map-可以将一个流中的值转换成一个新的流"><a href="#map-可以将一个流中的值转换成一个新的流" class="headerlink" title="map 可以将一个流中的值转换成一个新的流"></a>map 可以将一个流中的值转换成一个新的流</h5><pre><code>    List&lt;String&gt; collect = Stream.of(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+</code></pre><h5 id="map-可以将一个流中的值转换成一个新的流"><a href="#map-可以将一个流中的值转换成一个新的流" class="headerlink" title="map 可以将一个流中的值转换成一个新的流"></a>map 可以将一个流中的值转换成一个新的流</h5><p>T -&gt; Function -&gt; R<br>转换功能，内部就是Function接口。惰性求值</p>
+<pre><code>    List&lt;String&gt; collect = Stream.of(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
                                  .map(s -&gt; s.toUpperCase())
                                  .collect(Collectors.toList());
-</code></pre><p>T -&gt; Function -&gt; R</p>
-<h5 id="filter-便利数据并检查其中的元素"><a href="#filter-便利数据并检查其中的元素" class="headerlink" title="filter 便利数据并检查其中的元素"></a>filter 便利数据并检查其中的元素</h5><pre><code>    List&lt;String&gt; collect 
+</code></pre><h5 id="filter-便利数据并检查其中的元素"><a href="#filter-便利数据并检查其中的元素" class="headerlink" title="filter 便利数据并检查其中的元素"></a>filter 便利数据并检查其中的元素</h5><p>T -&gt; Predicate -&gt;boolean<br>顾名思义，起过滤筛选的作用。内部就是Predicate接口。惰性求值。</p>
+<pre><code>    List&lt;String&gt; collect 
         = Stream.of(&quot;ac&quot;, &quot;bd&quot;, &quot;cn&quot;)
                 .filter(s -&gt; s.contains(&quot;b&quot;))
                 .collect(Collectors.toList());
-</code></pre><p>T -&gt; Predicate -&gt;boolean</p>
-<h5 id="flatMap-和map类似，可以将多个Stream连接成一个Stream"><a href="#flatMap-和map类似，可以将多个Stream连接成一个Stream" class="headerlink" title="flatMap 和map类似，可以将多个Stream连接成一个Stream"></a>flatMap 和map类似，可以将多个Stream连接成一个Stream</h5><pre><code>     List&lt;Integer&gt; together = Stream.of(asList(1, 2), asList(3, 4))
+</code></pre><h5 id="count-统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值"><a href="#count-统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值" class="headerlink" title="count 统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值"></a>count 统计功能，一般都是结合filter使用，因为先筛选出我们需要的再统计即可。及早求值</h5><pre><code>     List&lt;Track&gt; tracks = asList(new Track(&quot;Bakai&quot;, 524),
+                                 new Track(&quot;Viltel&quot;, 378),
+                                 new Track(&quot;Timewas&quot;, 451));
+     long count = tracks.stream().filter(t -&gt; t.getLength() &lt; 400).count(); 
+     System.out.println(count);   
+</code></pre><p>输出结果1</p>
+<h5 id="flatMap-和map类似，可以将多个Stream合并连接成一个Stream。惰性求值"><a href="#flatMap-和map类似，可以将多个Stream合并连接成一个Stream。惰性求值" class="headerlink" title="flatMap 和map类似，可以将多个Stream合并连接成一个Stream。惰性求值"></a>flatMap 和map类似，可以将多个Stream合并连接成一个Stream。惰性求值</h5><pre><code>     List&lt;Integer&gt; together = Stream.of(asList(1, 2), asList(3, 4))
                                      .flatMap(num -&gt; num.stream())
                                      .collect(Collectors.toList());
-</code></pre><h5 id="max和min-取最大值最小值"><a href="#max和min-取最大值最小值" class="headerlink" title="max和min 取最大值最小值"></a>max和min 取最大值最小值</h5><pre><code>    List&lt;Track&gt; tracks = asList(new Track(&quot;Bakai&quot;, 524),
+</code></pre><h5 id="max和min-取最大值最小值。及早求值。"><a href="#max和min-取最大值最小值。及早求值。" class="headerlink" title="max和min 取最大值最小值。及早求值。"></a>max和min 取最大值最小值。及早求值。</h5><pre><code>    List&lt;Track&gt; tracks = asList(new Track(&quot;Bakai&quot;, 524),
                                  new Track(&quot;Viltel&quot;, 378),
                                  new Track(&quot;Timewas&quot;, 451));
 
-    Optional&lt;Track&gt; t = tracks.stream()
-                                .min(Comparator.comparing(track -&gt;track.getLength()));
+    Optional&lt;Track&gt; t = tracks.stream()   
+                              .min(Comparator.comparing(track -&gt;track.getLength()));
     Track track = t.get();
-</code></pre><h5 id="reduce-可以实现从一组值中生成一个新的值"><a href="#reduce-可以实现从一组值中生成一个新的值" class="headerlink" title="reduce 可以实现从一组值中生成一个新的值"></a>reduce 可以实现从一组值中生成一个新的值</h5><pre><code>    Integer reduce = Stream.of(1, 2, 3)
+</code></pre><h5 id="reduce-可以实现从一组值中生成一个新的值。及早求值。"><a href="#reduce-可以实现从一组值中生成一个新的值。及早求值。" class="headerlink" title="reduce 可以实现从一组值中生成一个新的值。及早求值。"></a>reduce 可以实现从一组值中生成一个新的值。及早求值。</h5><pre><code>    Integer reduce = Stream.of(1, 2, 3)
                             .reduce(0, (acc, element) -&gt; acc + element);
+    System.out.println(reduce);            
+
+</code></pre><p>输出结果6  </p>
+<h2 id="高级收集器"><a href="#高级收集器" class="headerlink" title="高级收集器"></a>高级收集器</h2><h5 id="转换成块partitioningBy"><a href="#转换成块partitioningBy" class="headerlink" title="转换成块partitioningBy"></a>转换成块partitioningBy</h5><p>常用的流操作是将其分解成两个集合，Collectors.partitioningBy帮我们实现了，接收一个Predicate函数式接口。<br>将示例学生分为会唱歌与不会唱歌的两个集合。<br>类似数据库partition By。</p>
+<pre><code>     //省略List&lt;student&gt; students的初始化
+        Map&lt;Boolean, List&lt;Student&gt;&gt; listMap = students.stream().collect(
+            Collectors.partitioningBy(student -&gt;
+                            student.getSpecialities().
+                            contains(SpecialityEnum.SING)));
+</code></pre><h5 id="数据分组groupingBy"><a href="#数据分组groupingBy" class="headerlink" title="数据分组groupingBy"></a>数据分组groupingBy</h5><p>数据分组是一种更自然的分割数据操作，与将数据分成 ture 和 false 两部分不同，可以使用任意值对数据分组。Collectors.groupingBy接收一个Function做转换。类似数据库的group by。  </p>
+<pre><code>    //省略List&lt;student&gt; students的初始化
+         Map&lt;SpecialityEnum, List&lt;Student&gt;&gt; listMap =
+              students.stream().collect(
+             Collectors.groupingBy(student -&gt; student.getSpecialities().get(0)));
 </code></pre><h2 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h2><p><strong>old:</strong>    artist -&gt; artist.getName()<br><strong>new:</strong>    Artist::getName<br>方法引用是一种引用方法的轻量级语法，如:ClassName:methodName</p>
 
         </div>
@@ -455,9 +489,26 @@
       <div class="toc" style="background: none;"></div>
       <section class="post-squares nextprev">
         
+          
+            <div class="post-nepre half previous">
+          
+            <a href="/2019/08/13/10分钟了解JWT/" rel="prev">
+              <div class="background">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190813103841.png" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)">
+              </div>
+              <span class="label">
+              Previous Post</span>
+              <div class="info">
+                <h3>
+                10分钟了解JWT</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
         
           
-            <div class="post-nepre full next">
+            <div class="post-nepre half next">
           
             <a href="/2019/06/21/Docker入门/" rel="next">
               <div class="background">

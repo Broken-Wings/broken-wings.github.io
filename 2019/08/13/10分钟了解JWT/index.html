@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">archive_a: 2019/6 | 聂文强的个人博客</title>
+  <title itemprop="name">10分钟了解JWT | 聂文强的个人博客</title>
   
     <link rel="shortcut icon" href="/images/favicon.ico">
   
@@ -319,143 +319,193 @@
   </div>
 </header>
 
-      <div class="blank" style="padding-top: 75px;">
-</div>
-<div id="content" class="site-content">
-  <div id="main">
-    <header class="page-header">
-      <h1 class="cat-title">
-      归档</h1>
-      <span class="cat-des">
-        <p>
-        Archives</p>
-      </span>
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
+<div class="pattern-center-blank"></div>
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190813103841.png);" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190813103841.png">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      10分钟了解JWT</h1>
+      <p class="entry-census">
+        <span>
+          <a href>
+            <img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href>BrokenWings</a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2019-8-13<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
     </header>
-    <div id="main-part">
-      <article class="art">
-        <div class="art-main">
-          <div class="art-content">
-            <div id="archives">
-              <p style="text-align:right;">
-                [<span id="al_expand_collapse" style="cursor: s-resize;">
-                全部展开/收缩</span>
-              ]</p>
-              
-              
-              
-              
-              
-                
-                <h3 class="al_year">2019年</h3>
-              
-              
-                
-                <ul class="al_mon_list">
-                  <li class="al_li">
-                    <span class="al_mon" style="cursor: s-resize;">
-                      08月(<span id="post-num">
-                      3</span>
-                    篇文章)</span>
-                    <ul class="al_post_list" style>
-              
-                      <li>
-                        <a href="/2019/08/13/10分钟了解JWT/">
-                          <span style="color:#0bf;">
-                          13日10:49:00</span>
-                          10分钟了解JWT
-                        </a>
-                      </li>
-                      
-                    </ul>
-                  </li>
-                </ul>
-              
-              
-              
-              
-              
-              
-                
-                <ul class="al_mon_list">
-                  <li class="al_li">
-                    <span class="al_mon" style="cursor: s-resize;">
-                      07月(<span id="post-num">
-                      3</span>
-                    篇文章)</span>
-                    <ul class="al_post_list" style>
-              
-                      <li>
-                        <a href="/2019/07/07/Lambda表达式/">
-                          <span style="color:#0bf;">
-                          07日20:25:00</span>
-                          Lambda表达式
-                        </a>
-                      </li>
-                      
-                    </ul>
-                  </li>
-                </ul>
-              
-              
-              
-              
-              
-              
-                
-                <ul class="al_mon_list">
-                  <li class="al_li">
-                    <span class="al_mon" style="cursor: s-resize;">
-                      06月(<span id="post-num">
-                      3</span>
-                    篇文章)</span>
-                    <ul class="al_post_list" style>
-              
-                      <li>
-                        <a href="/2019/06/21/Docker入门/">
-                          <span style="color:#0bf;">
-                          21日13:52:00</span>
-                          Docker入门
-                        </a>
-                      </li>
-                      
-                    </ul>
-                  </li>
-                </ul>
-              
-              
-              
-              
-              
-              
-                
-                <ul class="al_mon_list">
-                  <li class="al_li">
-                    <span class="al_mon" style="cursor: s-resize;">
-                      05月(<span id="post-num">
-                      3</span>
-                    篇文章)</span>
-                    <ul class="al_post_list" style>
-              
-                      <li>
-                        <a href="/2019/05/19/HelloWorld/">
-                          <span style="color:#0bf;">
-                          19日22:16:00</span>
-                          Hello World
-                        </a>
-                      </li>
-                      
-                    </ul>
-                  </li>
-                </ul>
-              
-              
+  </div>
+
+<div id="content" class="site-content">
+  <div id="primary" class="content-area">
+    <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h2 id="跨域身份验证"><a href="#跨域身份验证" class="headerlink" title="跨域身份验证"></a>跨域身份验证</h2><p>Internet服务无法与用户身份验证分开。一般过程如下。</p>
+<p>1.用户向服务器发送用户名和密码。</p>
+<p>2.验证服务器后，相关数据（如用户角色，登录时间等）将保存在当前会话中。</p>
+<p>3.服务器向用户返回session_id，session信息都会写入到用户的Cookie。</p>
+<p>4.用户的每个后续请求都将通过在Cookie中取出session_id传给服务器。</p>
+<p>5.服务器收到session_id并对比之前保存的数据，确认用户的身份。  </p>
+<p>这种模式最大的问题是，没有分布式架构，无法支持横向扩展。如果使用一个服务器，该模式完全没有问题。但是，如果它是服务器群集或面向服务的跨域体系结构的话，则需要一个统一的session数据库库来保存会话数据实现共享，这样负载均衡下的每个服务器才可以正确的验证用户身份。</p>
+<p><img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=81505614,2635154874&amp;fm=173&amp;app=25&amp;f=JPEG?w=491&amp;h=270&amp;s=88035F32299B45CA0AD5B5CA0000E0B1" alt="常规认证流程图"></p>
+<p>例如：站点A和站点B提供同一公司的相关服务。现在要求用户只需要登录其中一个网站，然后它就会自动登录到另一个网站。怎么做？</p>
+<p>一种解决方案是听过持久化session数据，写入数据库或文件持久层等。收到请求后，验证服务从持久层请求数据。该解决方案的优点在于架构清晰，而缺点是架构修改比较费劲，整个服务的验证逻辑层都需要重写，工作量相对较大。而且由于依赖于持久层的数据库或者问题系统，会有单点风险，如果持久层失败，整个认证体系都会挂掉。<br><img src="https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=1542585179,3885887088&amp;fm=173&amp;app=25&amp;f=JPEG?w=565&amp;h=273&amp;s=092A7433835061C25ECDE1CE0000E0B2" alt="基于session处理"><br>本文给大家介绍另外一种灵活的解决方案，通过客户端保存数据，而服务器根本不保存会话数据，每个请求都被发送回服务器。 JWT是这种解决方案的代表。<br><img src="https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=2871748982,2552404266&amp;fm=173&amp;app=25&amp;f=JPEG?w=640&amp;h=204&amp;s=8032EA364610E438007798C7020010B8" alt="基于JWT处理"></p>
+<h2 id="JWT的原则"><a href="#JWT的原则" class="headerlink" title="JWT的原则"></a>JWT的原则</h2><p>JWT的原则是在服务器身份验证之后，将生成一个JSON对象并将其发送回用户，如下所示。</p>
+<pre><code>    {
+        &quot;UserName&quot;: &quot;Chongchong&quot;,
+        &quot;Role&quot;: &quot;Admin&quot;,
+        &quot;Expire&quot;: &quot;2018-08-08 20:15:56&quot;
+    }
+</code></pre><p>之后，当用户与服务器通信时，客户在请求中发回JSON对象。服务器仅依赖于这个JSON对象来标识用户。为了防止用户篡改数据，服务器将在生成对象时添加签名（有关详细信息，请参阅下文）。</p>
+<p>服务器不保存任何会话数据，即服务器变为无状态，使其更容易扩展。</p>
+<h2 id="JWT的数据结构"><a href="#JWT的数据结构" class="headerlink" title="JWT的数据结构"></a>JWT的数据结构</h2><p>典型的，一个JWT看起来如下图。</p>
+<p>改对象为一个很长的字符串，字符之间通过”.”分隔符分为三个子串。注意JWT对象为一个长字串，各字串之间也没有换行符，此处为了演示需要，我们特意分行并用不同颜色表示了。每一个子串表示了一个功能块，总共有以下三个部分：</p>
+<p>JWT的三个部分如下。JWT头、有效载荷和签名，将它们写成一行如下。<br><img src="https://ss2.baidu.com/6ONYsjip0QIZ8tyhnq/it/u=563276735,1576219691&amp;fm=173&amp;app=25&amp;f=JPEG?w=640&amp;h=237&amp;s=D8243D7287E04D011E54B1CF0000A0B3" alt="JWT数据结构"><br>我们将在下面介绍这三个部分。</p>
+<ol>
+<li>JWT头部分是一个描述JWT元数据的JSON对象，通常如下所示。<pre><code> {
+     &quot;alg&quot;: &quot;HS256&quot;,
+     &quot;typ&quot;: &quot;JWT&quot;
+ }
+</code></pre>在上面的代码中，alg属性表示签名使用的算法，默认为HMAC SHA256（写为HS256）；typ属性表示令牌的类型，JWT令牌统一写为JWT。</li>
+</ol>
+<p>最后，使用Base64 URL算法将上述JSON对象转换为字符串保存。</p>
+<ol start="2">
+<li><p>有效载荷<br>有效载荷部分，是JWT的主体内容部分，也是一个JSON对象，包含需要传递的数据。 JWT指定七个默认字段供选择。</p>
+<p> iss：发行人</p>
+<p> exp：到期时间</p>
+<p> sub：主题</p>
+<p> aud：用户</p>
+<p> nbf：在此之前不可用</p>
+<p> iat：发布时间</p>
+<p> jti：JWT ID用于标识该JWT</p>
+<p> 除以上默认字段外，我们还可以自定义私有字段，如下例：</p>
+<pre><code> {
+     &quot;sub&quot;: &quot;1234567890&quot;,
+     &quot;name&quot;: &quot;chongchong&quot;,
+     &quot;admin&quot;: true
+ }
+</code></pre><p>请注意，默认情况下JWT是未加密的，任何人都可以解读其内容，因此不要构建隐私信息字段，存放保密信息，以防止信息泄露。</p>
+</li>
+</ol>
+<p>JSON对象也使用Base64 URL算法转换为字符串保存。</p>
+<ol start="3">
+<li><p>签名哈希<br> 签名哈希部分是对上面两部分数据签名，通过指定的算法生成哈希，以确保数据不会被篡改。</p>
+<p> 首先，需要指定一个密码（secret）。该密码仅仅为保存在服务器中，并且不能向用户公开。然后，使用标头中指定的签名算法（默认情况下为HMAC SHA256）根据以下公式生成签名。</p>
+</li>
+</ol>
+<p><code>HMACSHA256(base64UrlEncode(header) + &quot;.&quot; +base64UrlEncode(payload),secret)</code></p>
+<p>在计算出签名哈希后，JWT头，有效载荷和签名哈希的三个部分组合成一个字符串，每个部分用”.”分隔，就构成整个JWT对象。</p>
+<ol start="4">
+<li><p>Base64URL算法<br> 如前所述，JWT头和有效载荷序列化的算法都用到了Base64URL。该算法和常见Base64算法类似，稍有差别。</p>
+<p> 作为令牌的JWT可以放在URL中（例如api.example/?token=xxx）。 Base64中用的三个字符是”+”，”/“和”=”，由于在URL中有特殊含义，因此Base64URL中对他们做了替换：”=”去掉，”+”用”-“替换，”/“用”_”替换，这就是Base64URL算法，很简单把。</p>
+<h2 id="JWT的用法"><a href="#JWT的用法" class="headerlink" title="JWT的用法"></a>JWT的用法</h2><p>客户端接收服务器返回的JWT，将其存储在Cookie或localStorage中。</p>
+</li>
+</ol>
+<p>此后，客户端将在与服务器交互中都会带JWT。如果将它存储在Cookie中，就可以自动发送，但是不会跨域，因此一般是将它放入HTTP请求的Header Authorization字段中。</p>
+<p>Authorization: Bearer</p>
+<p>当跨域时，也可以将JWT被放置于POST请求的数据主体中。</p>
+<h2 id="JWT问题和趋势"><a href="#JWT问题和趋势" class="headerlink" title="JWT问题和趋势"></a>JWT问题和趋势</h2><p>1、JWT默认不加密，但可以加密。生成原始令牌后，可以使用改令牌再次对其进行加密。</p>
+<p>2、当JWT未加密方法是，一些私密数据无法通过JWT传输。</p>
+<p>3、JWT不仅可用于认证，还可用于信息交换。善用JWT有助于减少服务器请求数据库的次数。</p>
+<p>4、JWT的最大缺点是服务器不保存会话状态，所以在使用期间不可能取消令牌或更改令牌的权限。也就是说，一旦JWT签发，在有效期内将会一直有效。</p>
+<p>5、JWT本身包含认证信息，因此一旦信息泄露，任何人都可以获得令牌的所有权限。为了减少盗用，JWT的有效期不宜设置太长。对于某些重要操作，用户在使用时应该每次都进行进行身份验证。</p>
+<p>6、为了减少盗用和窃取，JWT不建议使用HTTP协议来传输代码，而是使用加密的HTTPS协议进行传输。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://jwt.io/introduction/" target="_blank" rel="noopener">Introduction to JSON Web Tokens</a>， by Auth0<br><a href="https://blog.usejournal.com/sessionless-authentication-withe-jwts-with-node-express-passport-js-69b059e4b22c" target="_blank" rel="noopener">Sessionless Authentication using JWTs (with Node + Express + Passport JS)</a>, by Bryan Manuele<br><a href="https://github.com/dwyl/learn-json-web-tokens/blob/master/README.md" target="_blank" rel="noopener">Learn how to use JSON Web Tokens</a>, by dwyl<br><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JSON Web Token 入门教程</a>,by 阮一峰</p>
+<p>原文链接：<a href="https://baijiahao.baidu.com/s?id=1608021814182894637&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">https://baijiahao.baidu.com/s?id=1608021814182894637&amp;wfr=spider&amp;for=pc</a></p>
+
+        </div>
+        <!-- .entry-content -->
+        <div class="single-reward">
+          <div class="reward-open">赏<div class="reward-main">
+              <ul class="reward-row">
+                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/AliPayQR.jpg"></li>
+                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/WeChanQR.jpg"></li>
+              </ul>
             </div>
           </div>
         </div>
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
       </article>
-    </div>
-  </div>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+        
+          
+            <div class="post-nepre full next">
+          
+            <a href="/2019/07/07/Lambda表达式/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190712094339.png" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                Lambda表达式</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
+      
+<div id="vcomments"></div>
+<script>
+  window.onload = function(){
+      var valine = new Valine();
+      valine.init({
+        el: '#vcomments',
+        appId: "7h28fK7ml5zBHaNkVEgfPq91-gzGzoHsz",
+        appKey: "6cCEaVuVobEqJ6D67OkYKQqJ",
+        path: window.location.pathname,
+        placeholder: "你是我一生只会遇见一次的惊喜 ..."
+      })
+  }
+</script>
+
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <a href class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg" itemprop="image" alt="BrokenWings" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href itemprop="url" rel="author">BrokenWings</a>
+            </h3>
+          </div>
+        </div>
+        <hr>
+        <p><i class="iconfont icon-write"></i>一个热爱学习的人</p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
+
+
 
     </div>    
     <div class="ins-search">
