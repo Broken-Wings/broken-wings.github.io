@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">Category: 技术 | 聂文强的个人博客</title>
+  <title itemprop="name">SpringMVC获取不到session中的值 | 聂文强的个人博客</title>
   
     <link rel="shortcut icon" href="/images/favicon.ico">
   
@@ -312,369 +312,228 @@
   </div>
 </header>
 
-      
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
 <div class="pattern-center-blank"></div>
-<div class="pattern-center ">
-  <div class="pattern-attachment-img">
-    <img w data-src="https://cdn.jsdelivr.net/gh/broken-wings/cdn@1.31/img/banner/coding.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg);" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      SpringMVC获取不到session中的值</h1>
+      <p class="entry-census">
+        <span>
+          <a href>
+            <img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href>BrokenWings</a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2019-11-27<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-  <header class="pattern-header ">
-    <h1 class="cat-title">野生技术协会</h1>
-    <span class="cat-des">
-      <p>Geek – Only for Love</p>
-    </span>
-  </header>
-</div>
+
 <div id="content" class="site-content">
   <div id="primary" class="content-area">
     <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h3 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h3><p>需要在接口中获取登录人的信息（登录人的信息在登录时存入session），但是获取时获取不到session中的值。错误代码如下</p>
+<pre><code>/**
+ *
+ * &lt;p&gt;Title: login &lt;/p&gt;
+ * &lt;p&gt;Description: TODO &lt;/p&gt;
+ * @param map
+ * @return
+ */
+@ApiOperation(value=&quot;用户登录&quot;, httpMethod = &quot;POST&quot;,produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = RestUrlConstants.LOGIN, method = RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
+public ResultBuilder login(@RequestBody Map&lt;String, String&gt; map,HttpServletRequest request) {
+    String loginAccount=map.get(&quot;username&quot;);
+    String password = map.get(&quot;password&quot;);
+    //String password = DigestUtils.md5Hex();
+    Map&lt;String, Object&gt; resultMap = userService.getUserByAccount(loginAccount, password);
+    if (resultMap!=null) {
+        Map&lt;String, Object&gt; userInfo=(Map&lt;String, Object&gt;)resultMap.get(&quot;userInfo&quot;);
+        request.getSession().setAttribute(&quot;userId&quot;, userInfo.get(&quot;id&quot;));
+        return ResultBuilder.success().build(resultMap);
+    }else{
+        return ResultBuilder.fail().build(userService.getLoginFailReason(loginAccount, password));
+    }
+}
+
+/**
+ *
+ * &lt;p&gt;Title: getLoginUserInfo &lt;/p&gt;
+ * &lt;p&gt;Description: TODO &lt;/p&gt;
+ * @param userId
+ * @return
+ */
+@ApiOperation(value=&quot;获取登录用户信息&quot;, httpMethod = &quot;GET&quot;,produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = RestUrlConstants.LOGININFO, method = RequestMethod.GET)
+public ResultBuilder getLoginUserInfo(@RequestParam(value=&quot;loggedId&quot;,required=false)Integer userId,HttpServletRequest request){
+    if (userId==null) {
+        userId = Integer.valueOf(request.getSession().getAttribute(&quot;userId&quot;).toString());
+    }
+    return ResultBuilder.success().build(userService.getUserById(userId));
+}
+</code></pre><h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法:"></a>解决方法:</h3><ol>
+<li>创建 获取HttpServletRequest 的工具类RequestUtil.java<br><code>`</code><br>import org.springframework.web.context.request.RequestContextHolder;<br>import org.springframework.web.context.request.ServletRequestAttributes;</li>
+</ol>
+<p>import javax.servlet.http.HttpServletRequest;</p>
+<p>public class RequestUtil {</p>
+<pre><code>public static HttpServletRequest getRequest(){
+    HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest(); 
+    return request;
+}
+</code></pre><p>}</p>
+<pre><code>2. 使用request获取session中的存值  
+</code></pre><p>/*<em>
+     </em></p>
+<pre><code> * &lt;p&gt;Title: login &lt;/p&gt;
+ * &lt;p&gt;Description: TODO &lt;/p&gt;
+ * @param map
+ * @return
+ */
+@ApiOperation(value=&quot;用户登录&quot;, httpMethod = &quot;POST&quot;,produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = RestUrlConstants.LOGIN, method = RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
+public ResultBuilder login(@RequestBody Map&lt;String, String&gt; map) {
+    String loginAccount=map.get(&quot;username&quot;);
+    String password = map.get(&quot;password&quot;);
+    //String password = DigestUtils.md5Hex();
+    Map&lt;String, Object&gt; resultMap = userService.getUserByAccount(loginAccount, password);
+    if (resultMap!=null) {
+        Map&lt;String, Object&gt; userInfo=(Map&lt;String, Object&gt;)resultMap.get(&quot;userInfo&quot;);
+        HttpServletRequest request = RequestUtil.getRequest();
+        request.getSession().setAttribute(&quot;userId&quot;, userInfo.get(&quot;id&quot;));
+        return ResultBuilder.success().build(resultMap);
+    }else{
+        return ResultBuilder.fail().build(userService.getLoginFailReason(loginAccount, password));
+    }
+}
+
+/**
+ *
+ * &lt;p&gt;Title: getLoginUserInfo &lt;/p&gt;
+ * &lt;p&gt;Description: TODO &lt;/p&gt;
+ * @param userId
+ * @return
+ */
+@ApiOperation(value=&quot;获取登录用户信息&quot;, httpMethod = &quot;GET&quot;,produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = RestUrlConstants.LOGININFO, method = RequestMethod.GET)
+public ResultBuilder getLoginUserInfo(@RequestParam(value=&quot;loggedId&quot;,required=false)Integer userId,HttpServletRequest request){
+
+    if (userId==null) {
+        HttpServletRequest request = RequestUtil.getRequest();
+        userId = Integer.valueOf(request.getSession().getAttribute(&quot;userId&quot;).toString());
+    }
+    return ResultBuilder.success().build(userService.getUserById(userId));
+}
+</code></pre><pre><code>3. 原理
+</code></pre><p>//得到存储进去的request</p>
+<p>private static final ThreadLocal<requestattributes> requestAttributesHolder =</requestattributes></p>
+<p>new NamedThreadLocal<requestattributes>(“Request attributes”);</requestattributes></p>
+<p>//可被子线程继承的request</p>
+<p>private static final ThreadLocal<requestattributes> inheritableRequestAttributesHolder =</requestattributes></p>
+<p>new NamedInheritableThreadLocal<requestattributes>(“Request context”);</requestattributes></p>
+<pre><code>同时`getRequestAttributes()`方法,相当于直接获取ThreadLocal里面的值,这样就保证了每一次获取到的Request是该请求的request.
+</code></pre><p>public static RequestAttributes getRequestAttributes() {</p>
+<p>RequestAttributes attributes = requestAttributesHolder.get();</p>
+<p>if (attributes == null) {</p>
+<p>attributes = inheritableRequestAttributesHolder.get();</p>
+<p>}</p>
+<p>return attributes;</p>
+<p>}<br><code>`</code></p>
+
+        </div>
+        <!-- .entry-content -->
+        <div class="single-reward">
+          <div class="reward-open">赏<div class="reward-main">
+              <ul class="reward-row">
+                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/AliPayQR.jpg"></li>
+                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/WeChanQR.jpg"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+        
+          
+            <div class="post-nepre full next">
+          
+            <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                spring 带cookie和不带cookie后端跨域解决</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-    SpringMVC获取不到session中的值</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-11-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-    spring 带cookie和不带cookie后端跨域解决</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-10-15</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/09/18/docker容器日志管理(清理)/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/09/18/docker容器日志管理(清理)/">
-    Docker容器日志管理（清理）</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-9-18</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/09/18/docker容器日志管理(清理)/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/07/07/Lambda表达式/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190712094339.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/07/07/Lambda表达式/">
-    Lambda表达式</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-7-7</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/07/07/Lambda表达式/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/06/21/Docker入门/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/06/21/Docker入门/">
-    Docker入门</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-6-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/06/21/Docker入门/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
+<div id="vcomments"></div>
+<script>
+  window.onload = function(){
+      var valine = new Valine();
+      valine.init({
+        el: '#vcomments',
+        appId: "7h28fK7ml5zBHaNkVEgfPq91-gzGzoHsz",
+        appKey: "6cCEaVuVobEqJ6D67OkYKQqJ",
+        path: window.location.pathname,
+        placeholder: "你是我一生只会遇见一次的惊喜 ..."
+      })
+  }
+</script>
 
-
-      <div class="clearer">
-      </div>
-    </main>
-    <!--  -->
-    
-  </div>
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <a href class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg" itemprop="image" alt="BrokenWings" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href itemprop="url" rel="author">BrokenWings</a>
+            </h3>
+          </div>
+        </div>
+        <hr>
+        <p><i class="iconfont icon-write"></i>一个热爱学习的人</p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
 
-<!-- 
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-    SpringMVC获取不到session中的值</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-11-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-    spring 带cookie和不带cookie后端跨域解决</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-10-15</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/09/18/docker容器日志管理(清理)/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/09/18/docker容器日志管理(清理)/">
-    Docker容器日志管理（清理）</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-9-18</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/09/18/docker容器日志管理(清理)/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/07/07/Lambda表达式/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190712094339.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/07/07/Lambda表达式/">
-    Lambda表达式</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-7-7</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/07/07/Lambda表达式/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/06/21/Docker入门/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/06/21/Docker入门/">
-    Docker入门</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-6-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/06/21/Docker入门/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
 
- -->
+
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>

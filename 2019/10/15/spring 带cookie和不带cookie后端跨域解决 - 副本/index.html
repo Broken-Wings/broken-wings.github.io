@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">Category: 技术 | 聂文强的个人博客</title>
+  <title itemprop="name">spring 带cookie和不带cookie后端跨域解决 | 聂文强的个人博客</title>
   
     <link rel="shortcut icon" href="/images/favicon.ico">
   
@@ -312,369 +312,196 @@
   </div>
 </header>
 
-      
+      <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
 <div class="pattern-center-blank"></div>
-<div class="pattern-center ">
-  <div class="pattern-attachment-img">
-    <img w data-src="https://cdn.jsdelivr.net/gh/broken-wings/cdn@1.31/img/banner/coding.jpg" class="lazyload" onerror="imgError(this,3)" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;">
+
+  <div class="pattern-center single-center">
+    <!-- 有配图默认渲染第一张 -->
+    <div class="pattern-attachment-img lazyload" style="background-image: url(https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg);" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg">
+    </div>
+    <header class="pattern-header single-header">
+      <h1 class="entry-title">
+      spring 带cookie和不带cookie后端跨域解决</h1>
+      <p class="entry-census">
+        <span>
+          <a href>
+            <img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg">
+          </a>
+        </span>
+        <span>
+          <a href>BrokenWings</a>
+        </span>
+        <span class="bull">
+        ·</span>
+        2019-10-15<span class="bull">
+        ·</span>
+      <span id="busuanzi_value_page_pv"></span>次阅读</p>
+    </header>
   </div>
-  <header class="pattern-header ">
-    <h1 class="cat-title">野生技术协会</h1>
-    <span class="cat-des">
-      <p>Geek – Only for Love</p>
-    </span>
-  </header>
-</div>
+
 <div id="content" class="site-content">
   <div id="primary" class="content-area">
     <main id="main" class="site-main" role="main">
+      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
+        <div class="toc"></div>
+        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
+        
+        <div class="entry-content">
+          <h3 id="问题描述："><a href="#问题描述：" class="headerlink" title="问题描述："></a>问题描述：</h3><p>前端访问后端获取数据需要进行跨域处理，在此过程中遇到请求返回403问题，原因是后端的Header与前端Header设置不统一，所以造成前后端不允许跨域访问，对错误代码如下:</p>
+<pre><code>Request header field Content-Type is not allowed by Access-Control-Allow-Headers in preflight response.
+</code></pre><h3 id="问题解决："><a href="#问题解决：" class="headerlink" title="问题解决："></a>问题解决：</h3><p>1.这里采用的是通过过滤器来对跨域进行设置，所以需要一个类来实现Filter（javax.servlet.Filter）接口，再从doFilter中设置Header信息使之运行前后端可以跨域访问具体代码如下</p>
+<pre><code>import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+public class CorsFilter implements Filter{
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletResponse resp =(HttpServletResponse) response;
+        HttpServletRequest reqst = (HttpServletRequest)request;
+        resp.setHeader(&quot;Access-Control-Allow-Origin&quot;, reqst.getHeader(&quot;Origin&quot;));
+        resp.setHeader(&quot;Access-Control-Allow-Credentials&quot;, &quot;true&quot;);
+        resp.setHeader(&quot;Access-Control-Allow-Methods&quot;, &quot;*&quot;);
+        resp.setHeader(&quot;Access-Control-Allow-Headers&quot;, &quot;Origin, x-requested-with, Content-Type, Accept,Access-Token,authorization&quot;);
+        resp.setHeader(&quot;Access-Control-Expose-Headers&quot;, &quot;*&quot;);
+
+        chain.doFilter(request, resp);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+}
+</code></pre><ol start="2">
+<li>编写完自己的Filter后需要在web.xml中声明起Filter存在和Filter过滤的范围，具体代码如下：<pre><code>&lt;filter&gt;
+&lt;filter-name&gt;corsFilter&lt;/filter-name&gt;
+&lt;filter-class&gt;com.cn.hy.project.filter.CorsFilter&lt;/filter-class&gt;
+&lt;async-supported&gt;true&lt;/async-supported&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+&lt;filter-name&gt;corsFilter&lt;/filter-name&gt;
+&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</code></pre>关于在Filter中Header的信息设置详解：<pre><code>Access-Control-Allow-Origin：此标头指定资源可以访问的URI。如果未指定此标头，则默认情况下允许所有原点。如果指定了值（*），则允许所有原点的方式与默认值相同，但要注意当指定值为*时需要Access-Control-Allow-Headers的值中添加Origin或者也设置为*，否则还是不能跨域。
+Access-Control-Allow-Methods：此标头用于指定访问资源时允许的方法。方法可以是GET，POST等。如果不使用此标头，则默认允许使用GET，POST和HEAD HTTP方法。如果已为此标头指定了HTTP方法，则仅允许指定的HTTP方法，而不是默认值。如果我们使用 （*）然后将允许所有HTTP方法。
+Access-Control-Allow-Headers：用于 preflight request （预检请求）中，列出了将会在正式请求的 Access-Control-Expose-Headers 字段中出现的首部信息。
+Access-Control-Expose-Headers：使用此标头，服务器告诉浏览器其白名单标头。跨机构服务器使用它来在飞行前请求的响应中发送标头。这些指定的标头是那些将在实际响应中通过交叉原点用于实际请求的标头。它不支持（*）。如果它是标题之一，即Cache-Control，Content-Language，Content-Type，Expires，Last-Modified或Pragma，则无需指定标题。我们可以在这里指定自定义标头。默认情况下，标题为空列表。
+Access-Control-Allow-Credentials：此标头将输入作为布尔值，如果其值为true然后响应请求可以暴露给页面。凭据是cookie，授权标头或TLS客户端证书。如果值为false，则不会通过跨源发送凭据。
+Access-Control-Max-Age：这个响应首部表示 preflight request  （预检请求）的返回结果（即 Access-Control-Allow-Methods 和Access-Control-Allow-Headers 提供的信息） 可以被缓存多久。单位是秒。
+</code></pre>注意：<br><code>`</code><br>在运行跨域访问时，针对是否允许传输cookie的设置</li>
+</ol>
+<p>Access-Control-Allow-Credentials：此标头将输入作为布尔值，如果其值为true然后响应请求可以暴露给页面。凭据是cookie，授权标头或TLS客户端证书。如果值为false，则不会通过跨源发送凭据。<br><code>`</code><br>附：对于设置是否允许跨域处理，前端处理方法：<br><img src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20191031165321.png" alt="前端处理方法"></p>
+
+        </div>
+        <!-- .entry-content -->
+        <div class="single-reward">
+          <div class="reward-open">赏<div class="reward-main">
+              <ul class="reward-row">
+                <li class="alipay-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/AliPayQR.jpg"></li>
+                <li class="wechat-code"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/donate/WeChanQR.jpg"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
+        <footer class="post-footer">
+          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
+          <div class="post-tags">
+          </div>
+          <div class="post-share">
+            <div class="social-share sharehidden share-component"></div>
+            <i class="iconfont show-share icon-forward"></i>
+          </div>
+        </footer><!-- .entry-footer -->
+      </article>
+      <!-- #post-## -->
+      <div class="toc" style="background: none;"></div>
+      <section class="post-squares nextprev">
+        
+          
+            <div class="post-nepre half previous">
+          
+            <a href="/2019/11/27/SpringMVC获取不到session中的值/" rel="prev">
+              <div class="background">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)">
+              </div>
+              <span class="label">
+              Previous Post</span>
+              <div class="info">
+                <h3>
+                SpringMVC获取不到session中的值</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+        
+          
+            <div class="post-nepre half next">
+          
+            <a href="/2019/09/18/docker容器日志管理(清理)/" rel="next">
+              <div class="background">
+                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.3/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)">
+              </div>
+              <span class="label">
+              Next Post</span>
+              <div class="info">
+                <h3>
+                Docker容器日志管理（清理）</h3>
+                <hr>
+              </div>
+            </a>
+          </div>
+        
+      </section>
       
-  <!-- 首页默认取最最新文章集 -->
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-    SpringMVC获取不到session中的值</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-11-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-    spring 带cookie和不带cookie后端跨域解决</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-10-15</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/09/18/docker容器日志管理(清理)/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/09/18/docker容器日志管理(清理)/">
-    Docker容器日志管理（清理）</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-9-18</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/09/18/docker容器日志管理(清理)/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/07/07/Lambda表达式/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190712094339.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/07/07/Lambda表达式/">
-    Lambda表达式</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-7-7</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/07/07/Lambda表达式/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/06/21/Docker入门/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/06/21/Docker入门/">
-    Docker入门</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-6-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/06/21/Docker入门/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
+<div id="vcomments"></div>
+<script>
+  window.onload = function(){
+      var valine = new Valine();
+      valine.init({
+        el: '#vcomments',
+        appId: "7h28fK7ml5zBHaNkVEgfPq91-gzGzoHsz",
+        appKey: "6cCEaVuVobEqJ6D67OkYKQqJ",
+        path: window.location.pathname,
+        placeholder: "你是我一生只会遇见一次的惊喜 ..."
+      })
+  }
+</script>
 
-
-      <div class="clearer">
-      </div>
-    </main>
-    <!--  -->
-    
-  </div>
+      <section class="author-profile">
+        <div class="info" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <a href class="profile gravatar"><img src="https://cdn.jsdelivr.net/gh/Broken-Wings/cdn@1.31/img/custom/avatar.jpg" itemprop="image" alt="BrokenWings" height="70" width="70"></a>
+          <div class="meta">
+            <span class="title">Author</span>
+            <h3 itemprop="name">
+            <a href itemprop="url" rel="author">BrokenWings</a>
+            </h3>
+          </div>
+        </div>
+        <hr>
+        <p><i class="iconfont icon-write"></i>一个热爱学习的人</p>
+      </section>
+    </main><!-- #main -->
+  </div><!-- #primary -->
 </div>
 
-<!-- 
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-    SpringMVC获取不到session中的值</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-11-27</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/11/27/SpringMVC获取不到session中的值/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/timg.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-    spring 带cookie和不带cookie后端跨域解决</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-10-15</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/10/15/spring 带cookie和不带cookie后端跨域解决 - 副本/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/09/18/docker容器日志管理(清理)/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/09/18/docker容器日志管理(清理)/">
-    Docker容器日志管理（清理）</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-9-18</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/09/18/docker容器日志管理(清理)/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/07/07/Lambda表达式/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190712094339.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/07/07/Lambda表达式/">
-    Lambda表达式</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-7-7</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/07/07/Lambda表达式/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
-    <article class="post post-list" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="post-entry">
-    <div class="feature">
-      <a href="/2019/06/21/Docker入门/">
-        <div class="overlay">
-          <i class="iconfont icon-text">
-          </i>
-        </div>
-        <img width="150" height="150" src="https://raw.githubusercontent.com/Broken-Wings/ImageHosting/master/img/20190614141756.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt>
-      </a>
-    </div>
-    <h1 class="entry-title">
-    <a href="/2019/06/21/Docker入门/">
-    Docker入门</a>
-    </h1>
-    <div class="p-time">
-      <i class="iconfont icon-time">
-      </i>
-    2019-6-21</div>
-    <p>
-    </p>
-    <footer class="entry-footer">
-      <div class="post-more">
-        <a href="/2019/06/21/Docker入门/">
-          <i class="iconfont icon-caidan">
-          </i>
-        </a>
-      </div>
-    </footer>
-  </div>
-  <hr>
-</article>
-  
 
- -->
+
     </div>    
     <div class="ins-search">
     <div class="ins-search-mask"></div>
